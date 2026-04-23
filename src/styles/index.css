@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-dark-bg text-white overflow-x-hidden;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card-bg/40 backdrop-blur-xl border border-white/10 rounded-2xl transition-all duration-500;
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2), 0 0 1px 0 rgba(255, 255, 255, 0.1) inset;
+  }
+  
+  .glass-card:hover {
+    @apply border-white/20;
+    box-shadow: 0 12px 40px -4px rgba(0, 198, 255, 0.15), 0 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+    transform: translateY(-4px);
+  }
+  
+  .btn-primary {
+    @apply bg-orbit-gradient px-6 py-2.5 rounded-lg font-semibold hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-electric-blue/20 relative overflow-hidden;
+  }
+  
+  .btn-primary::after {
+    content: '';
+    @apply absolute inset-0 bg-white/20 translate-x-[-100%] transition-transform duration-500 skew-x-[-20deg];
+  }
+  
+  .btn-primary:hover::after {
+    @apply translate-x-[100%];
+  }
+  
+  .section-container {
+    @apply max-w-full mx-auto px-6 py-10 md:px-16 lg:px-24 md:py-16;
+  }
+}
+
+.text-gradient {
+  @apply bg-orbit-gradient bg-clip-text text-transparent;
+}
+
+/* Custom Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes glow-shift {
+  0%, 100% { filter: blur(100px) opacity(0.3); }
+  50% { filter: blur(140px) opacity(0.5); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-glow-shift {
+  animation: glow-shift 8s ease-in-out infinite;
+}
+
+.reveal-on-scroll {
+  @apply opacity-0 translate-y-8 transition-all duration-1000 ease-out;
+}
+
+.reveal-on-scroll.active {
+  @apply opacity-100 translate-y-0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-dark-bg;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+}
