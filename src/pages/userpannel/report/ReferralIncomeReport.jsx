@@ -25,8 +25,19 @@ const ReferralIncomeReport = () => {
                 const tradingRes = await api.get('/reports/trading-level');
                 const tradingData = tradingRes.data.map(item => ({ ...item, type: 'Trading Level' }));
 
-                // 3. Merge and Sort chronologically
-                const merged = [...botData, ...tradingData].sort((a, b) => 
+                // 3. Fetch Direct Referral Rewards ($10 Monthly)
+                const directRes = await api.get('/reports/direct-reward');
+                const directData = directRes.data.payments?.map(p => ({
+                    ...p,
+                    amount: p.amount,
+                    type: 'Direct Reward',
+                    createdAt: p.paidAt,
+                    level: 'Direct',
+                    fromUserId: { fullName: 'OrbitFX', username: 'System Reward' }
+                })) || [];
+
+                // 4. Merge and Sort chronologically
+                const merged = [...botData, ...tradingData, ...directData].sort((a, b) => 
                     new Date(b.createdAt) - new Date(a.createdAt)
                 );
 
@@ -153,9 +164,9 @@ const ReferralIncomeReport = () => {
                                                 <td className="p-5">
                                                     <div className="flex items-center gap-4">
                                                         <div className="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-[11px] font-black text-green-500 shadow-lg shadow-green-500/5 group-hover:scale-110 transition-transform">
-                                                            L{item.level}
+                                                            {item.level === 'Direct' ? 'DR' : `L${item.level}`}
                                                         </div>
-                                                        <span className="text-[11px] font-black text-gray-300 uppercase italic tracking-widest">Generation {item.level}</span>
+                                                        <span className="text-[11px] font-black text-gray-300 uppercase italic tracking-widest">{item.level === 'Direct' ? 'Direct Reward' : `Generation ${item.level}`}</span>
                                                     </div>
                                                 </td>
                                                 <td className="p-5">
