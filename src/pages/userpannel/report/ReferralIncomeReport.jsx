@@ -19,7 +19,10 @@ const ReferralIncomeReport = () => {
             try {
                 // 1. Fetch AI Bot Commissions
                 const botRes = await api.get('/bots/income');
-                const botData = botRes.data.map(item => ({ ...item, type: 'Bot Activation' }));
+                const botData = botRes.data.map(item => ({ 
+                    ...item, 
+                    type: item.incomeType || 'Bot Activation' 
+                }));
 
                 // 2. Fetch Trading Profit Level Rewards
                 const tradingRes = await api.get('/reports/trading-level');
@@ -178,7 +181,11 @@ const ReferralIncomeReport = () => {
                                                 <td className="p-5">
                                                     <div className="flex flex-col">
                                                         <span className="text-green-500 font-black text-xl italic tracking-tight">+${item.amount.toLocaleString()}</span>
-                                                        <div className={`mt-1.5 px-2 py-0.5 rounded text-[7px] font-black uppercase tracking-widest w-fit ${item.type === 'Bot Activation' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-green-500/10 text-green-400 border border-green-500/20'}`}>
+                                                        <div className={`mt-1.5 px-2 py-0.5 rounded text-[7px] font-black uppercase tracking-widest w-fit ${
+                                                            item.type === 'Bot Activation' || item.type === 'AI Bot Referral' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 
+                                                            item.type === 'Account Activation' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20' :
+                                                            'bg-green-500/10 text-green-400 border border-green-500/20'
+                                                        }`}>
                                                             {item.type || 'Commission'}
                                                         </div>
                                                     </div>
