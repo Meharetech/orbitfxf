@@ -8,7 +8,6 @@ import LevelTeam from './network/LevelTeam';
 import TreeView from './network/TreeView';
 import ProfileView from './profile/ProfileView';
 import ChangePassword from './profile/ChangePassword';
-import WalletSettings from './profile/WalletSettings';
 import FundRequest from './fund/FundRequest';
 import FundRequestHistory from './fund/FundRequestHistory';
 import InternalTransfer from './fund/InternalTransfer';
@@ -16,13 +15,7 @@ import TransferHistory from './fund/TransferHistory';
 import ReceivedHistory from './fund/ReceivedHistory';
 import WithdrawalRequest from './withdrawal/WithdrawalRequest';
 import WithdrawalHistory from './withdrawal/WithdrawalHistory';
-import Activation from './topup/Activation';
 import Investment from './topup/Investment';
-import ActivationHistory from './topup/ActivationHistory';
-import DirectRewardReport from './report/DirectRewardReport';
-import PairRewardReport from './report/PairRewardReport';
-import PairMonthlyHistory from './report/PairMonthlyHistory';
-import ReferralIncomeReport from './report/ReferralIncomeReport';
 import TradingProfitReport from './report/TradingProfitReport';
 import TradingLevelReport from './report/TradingLevelReport';
 
@@ -35,7 +28,6 @@ const UserPanelRoutes = () => {
         {/* Profile Routes */}
         <Route path="profile/view" element={<ProfileView />} />
         <Route path="profile/password" element={<ChangePassword />} />
-        <Route path="profile/wallet" element={<WalletSettings />} />
         
         {/* Network Routes */}
         <Route path="network/direct" element={<NetworkTeam type="direct" title="Direct Team" />} />
@@ -46,8 +38,6 @@ const UserPanelRoutes = () => {
         
         {/* Top Up Routes */}
         <Route path="topup/investment" element={<Investment />} />
-        <Route path="topup/activation" element={<Activation />} />
-        <Route path="topup/history" element={<ActivationHistory />} />
         
         {/* Fund Routes */}
         <Route path="fund/request" element={<FundRequest />} />
@@ -58,10 +48,6 @@ const UserPanelRoutes = () => {
         
         {/* Report Routes */}
         <Route path="report/trading-profit" element={<TradingProfitReport />} />
-        <Route path="report/referral-income" element={<ReferralIncomeReport />} />
-        <Route path="report/direct-reward" element={<DirectRewardReport />} />
-        <Route path="report/pair-reward" element={<PairRewardReport />} />
-        <Route path="report/pair-monthly" element={<PairMonthlyHistory />} />
         <Route path="report/trading-level" element={<TradingLevelReport />} />
         
         {/* Withdrawal Routes */}

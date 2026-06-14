@@ -141,31 +141,8 @@ const Investment = () => {
                 </div>
             </div>
 
-            {/* ── Case 1: NOT ACTIVATED ── */}
-            {!isActivated && (
-                <div className="glass-card p-12 border-red-500/20 bg-red-500/[0.02] flex flex-col items-center text-center gap-6 relative overflow-hidden rounded-3xl">
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-red-500/5 blur-[100px] rounded-full pointer-events-none" />
-                    <div className="w-20 h-20 rounded-2xl bg-red-400/10 border border-red-500/20 flex items-center justify-center relative z-10 shadow-xl shadow-red-500/10">
-                        <ShieldAlert size={40} className="text-red-500" />
-                    </div>
-                    
-                    <div className="space-y-2 relative z-10 max-w-lg">
-                        <h3 className="text-2xl font-black text-white uppercase tracking-tighter italic">Node <span className="text-red-500">Locked</span></h3>
-                        <p className="text-gray-600 text-[10px] font-bold uppercase tracking-widest leading-relaxed opacity-60">
-                            Required Protocol: Initialize your node with the <span className="text-white">$150 Annual Subscription</span> to unlock institutional portfolio access.
-                        </p>
-                    </div>
-
-                    <Link to="/user/topup/activation" className="relative z-10 group">
-                        <div className="flex items-center gap-3 px-8 py-4 bg-red-500 rounded-xl text-white font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-red-500/30">
-                            <Zap size={14} fill="white" /> Activate Core Node
-                        </div>
-                    </Link>
-                </div>
-            )}
-
             {/* ── Case 2: ACTIVATED (Full Width List) ── */}
-            {isActivated && (
+            {true && (
                 <div className="flex flex-col gap-6 w-full">
                     
                     {/* Summary Row (Compact) */}

@@ -46,19 +46,12 @@ const Dashboard = () => {
   }, [user.token]);
 
   const allStats = [
-    // Row 1 & 2 combined logic
-    { title: 'My Activation',    value: `$${statsData?.myActivation?.toLocaleString() || '0'}`, icon: ShieldCheck, color: 'text-green-500' },
-    { title: 'Day\'s Remaining',  value: statsData?.daysRemaining || '0', icon: Clock, color: 'text-amber-500' },
     { title: 'Portfolio Invest', value: `$${statsData?.totalInvestment?.toLocaleString() || '0'}`, icon: Wallet, color: 'text-electric-blue' },
     { title: 'Direct Team',      value: statsData?.directReferralCount?.toString() || '0', icon: Users, color: 'text-neon-blue' },
     { title: 'Left Team',        value: statsData?.leftTeamCount?.toString() || '0', icon: Activity, color: 'text-crypto-violet' },
     { title: 'Right Team',       value: statsData?.rightTeamCount?.toString() || '0', icon: Activity, color: 'text-crypto-violet' },
     { title: 'Total Team',       value: statsData?.totalTeamCount?.toString() || '0', icon: Users, color: 'text-neon-blue' },
     { title: 'Trading Profit',   value: `$${statsData?.totalTradingProfit?.toLocaleString() || '0'}`, icon: TrendingUp, color: 'text-green-400' },
-    { title: 'Referral Income',  value: `$${statsData?.totalReferralIncome?.toLocaleString() || '0'}`, icon: Zap, color: 'text-amber-400' },
-    { title: 'Direct Reward',    value: `$${statsData?.directReferralReward?.toLocaleString() || '0'}`, icon: ArrowUpRight, color: 'text-blue-400' },
-    { title: 'Pair Reward',      value: `$${statsData?.pairMatchingReward?.toLocaleString() || '0'}`, icon: BarChart3, color: 'text-crypto-violet' },
-    { title: 'Monthly Reward',   value: `$${statsData?.pairMatchingMonthlyReward?.toLocaleString() || '0'}`, icon: CreditCard, color: 'text-green-400' },
     { title: 'Level Income',     value: `$${statsData?.totalLevelRoi?.toLocaleString() || '0'}`, icon: TrendingUp, color: 'text-amber-500' },
     { title: 'Total Earning',    value: `$${statsData?.totalEarnings?.toLocaleString() || '0'}`, icon: Wallet, color: 'text-green-500' },
     { title: 'Total Withdrawal', value: `$${statsData?.totalWithdrawal?.toLocaleString() || '0'}`, icon: ArrowDownLeft, color: 'text-red-500' },
@@ -93,10 +86,10 @@ const Dashboard = () => {
                 <div className="text-electric-blue font-black">${userProfile?.balance?.toFixed(2) || '0.00'}</div>
             </div>
             <button 
-                onClick={() => window.location.href = userProfile?.isActivated ? '/user/fund/request' : '/user/topup/activation'}
+                onClick={() => window.location.href = '/user/fund/request'}
                 className="btn-primary flex items-center gap-2 w-max px-6 py-3"
             >
-                {userProfile?.isActivated ? 'Deposit' : 'TOP-UP'} <Zap className="w-4 h-4 fill-current" />
+                Deposit <Zap className="w-4 h-4 fill-current" />
             </button>
         </div>
       </motion.div>

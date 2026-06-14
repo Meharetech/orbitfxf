@@ -16,7 +16,7 @@ const WithdrawalRequest = () => {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
     const [balance, setBalance] = useState(0);
-    const [wallet, setWallet] = useState({ address: '', network: '' });
+    const [wallet, setWallet] = useState({ address: '', network: 'USDT (TRC20)' });
     const [settings, setSettings] = useState({ withdrawalFee: 10, minWithdrawal: 1 });
     
     // Modal & Confirmation State
@@ -45,7 +45,7 @@ const WithdrawalRequest = () => {
             setBalance(res.data.balance || 0);
             setWallet({ 
                 address: res.data.walletAddress || '', 
-                network: res.data.walletNetwork || '' 
+                network: res.data.walletNetwork || 'USDT (TRC20)' 
             });
         } catch (err) {
             console.error('Error fetching profile');
@@ -58,7 +58,7 @@ const WithdrawalRequest = () => {
         e.preventDefault();
         setError('');
         if (!wallet.address) {
-            setError('Please configure your withdrawal wallet in Profile > Wallet first.');
+            setError('Please enter a valid wallet destination address.');
             return;
         }
         if (Number(amount) < settings.minWithdrawal) {
@@ -76,7 +76,11 @@ const WithdrawalRequest = () => {
 
         try {
             const user = JSON.parse(localStorage.getItem('user'));
-            await api.post('/withdrawals/request', { amount });
+            await api.post('/withdrawals/request', { 
+                amount,
+                walletAddress: wallet.address,
+                walletNetwork: wallet.network
+            });
             setSuccess(true);
             setAmount('');
             setConfirmed(false);
@@ -141,34 +145,11 @@ const WithdrawalRequest = () => {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
                 {/* Withdrawal Form */}
                 <div className="lg:col-span-3 space-y-8">
-                    {/* Wallet Status */}
-                    <div className={`glass-card p-6 border ${wallet.address ? 'border-green-500/20 bg-green-500/5' : 'border-red-500/20 bg-red-500/5'} flex items-center justify-between`}>
-                        <div className="flex items-center gap-6">
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${wallet.address ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'}`}>
-                                <Wallet size={20}/>
-                            </div>
-                            <div>
-                                <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1">Connected Wallet Protocol</p>
-                                <h4 className="text-white text-xs font-black tracking-widest uppercase font-mono truncate max-w-[250px]">
-                                    {wallet.address || 'No Wallet Configured'}
-                                </h4>
-                                {wallet.network && <span className="text-[9px] text-amber-500/80 font-black uppercase tracking-widest mt-1 block">{wallet.network}</span>}
-                            </div>
-                        </div>
-                        {!wallet.address && (
-                            <button 
-                                onClick={() => window.location.href = '/user/profile/wallet'}
-                                className="px-4 py-2 bg-red-500 text-white text-[9px] font-black uppercase tracking-widest rounded-lg"
-                            >
-                                Setup
-                            </button>
-                        )}
-                    </div>
-
                     <div className="glass-card p-10 border-white/5 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 blur-[100px] rounded-full -mr-32 -mt-32"></div>
                         
-                        <form onSubmit={handlePreAuth} className="space-y-10 relative z-10">
+                        <form onSubmit={handlePreAuth} className="space-y-8 relative z-10">
+                            {/* Redemption Amount */}
                             <div className="space-y-4">
                                 <label className="text-[10px] text-gray-600 font-black uppercase tracking-widest ml-1 flex items-center gap-2">
                                     <DollarSign size={12} className="text-amber-500" /> Redemption Amount (USD)
@@ -194,6 +175,45 @@ const WithdrawalRequest = () => {
                                         <AlertCircle size={12}/> Minimum Withdrawal is ${settings.minWithdrawal}
                                     </p>
                                 )}
+                            </div>
+
+                            {/* Network Selection */}
+                            <div className="space-y-4">
+                                <label className="text-[10px] text-gray-600 font-black uppercase tracking-widest ml-1 flex items-center gap-2">
+                                    Network Selection Protocol
+                                </label>
+                                <div className="relative">
+                                    <select 
+                                        value={wallet.network}
+                                        onChange={(e) => setWallet({ ...wallet, network: e.target.value })}
+                                        className="w-full bg-white/[0.03] border border-white/10 py-4 px-6 rounded-2xl text-white font-black uppercase tracking-widest text-[11px] focus:outline-none focus:border-amber-500/50 appearance-none cursor-pointer"
+                                    >
+                                        {['USDT (TRC20)', 'USDT (ERC20)', 'BITCOIN', 'ETHEREUM', 'BNB (BEP20)'].map(n => (
+                                            <option key={n} value={n} className="bg-[#0a0f1d] text-white py-2">{n}</option>
+                                        ))}
+                                    </select>
+                                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                                        <ChevronRight className="rotate-90" size={16} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Destination Address */}
+                            <div className="space-y-4">
+                                <label className="text-[10px] text-gray-600 font-black uppercase tracking-widest ml-1 flex items-center gap-2">
+                                    <Wallet size={12} className="text-amber-500" /> Destination Address
+                                </label>
+                                <div className="relative group">
+                                    <Wallet className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-700 group-focus-within:text-amber-500 transition-colors" size={20} />
+                                    <input 
+                                        type="text" 
+                                        required
+                                        placeholder="Enter your wallet address..."
+                                        value={wallet.address}
+                                        onChange={(e) => setWallet({ ...wallet, address: e.target.value })}
+                                        className="w-full bg-white/[0.02] border border-white/5 py-5 pl-14 pr-6 rounded-2xl text-white font-black tracking-widest text-xs focus:outline-none focus:border-amber-500/50 transition-all placeholder:text-gray-800"
+                                    />
+                                </div>
                             </div>
 
                             {/* Fee Calculation */}
@@ -222,7 +242,7 @@ const WithdrawalRequest = () => {
 
                             <button 
                                 type="submit"
-                                disabled={loading || !amount || Number(amount) <= 0 || Number(amount) > balance || Number(amount) < settings.minWithdrawal}
+                                disabled={loading || !amount || Number(amount) <= 0 || Number(amount) > balance || Number(amount) < settings.minWithdrawal || !wallet.address}
                                 className="w-full py-6 bg-amber-500 text-white font-black uppercase tracking-[0.4em] text-xs rounded-2xl flex items-center justify-center gap-4 shadow-2xl shadow-amber-500/20 hover:bg-amber-600 active:scale-95 disabled:opacity-30 disabled:grayscale transition-all"
                             >
                                 {loading ? <Loader2 className="animate-spin w-6 h-6" /> : <><Zap size={20} /> Authorize Liquidation</>}

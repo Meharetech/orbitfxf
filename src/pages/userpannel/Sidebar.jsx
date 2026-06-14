@@ -9,7 +9,7 @@ import {
   FolderTree, UserPlus, UserCheck, 
   TrendingUp, History, Send, Download, 
   Award, Briefcase, BarChart3,
-  Key, Wallet2, PlusCircle, BadgeCheck
+  Key, PlusCircle, BadgeCheck
 } from 'lucide-react';
 
 const menuItems = [
@@ -25,7 +25,6 @@ const menuItems = [
     subItems: [
       { title: 'View Profile',     path: '/user/profile/view',     icon: UserCheck },
       { title: 'Change Password',  path: '/user/profile/password', icon: Key },
-      { title: 'Add Wallet',       path: '/user/profile/wallet',   icon: Wallet2 },
     ]
   },
   {
@@ -46,8 +45,6 @@ const menuItems = [
     id: 'topup',
     subItems: [
       { title: 'Portfolio Investment', path: '/user/topup/investment', icon: Activity },
-      { title: 'Activation',           path: '/user/topup/activation', icon: Key },
-      { title: 'Activation History',   path: '/user/topup/history',    icon: History },
     ]
   },
   {
@@ -68,10 +65,6 @@ const menuItems = [
     id: 'report',
     subItems: [
       { title: 'Trading Profit Income', path: '/user/report/trading-profit',  icon: BarChart3 },
-      { title: 'Referral Income',       path: '/user/report/referral-income', icon: Users },
-      { title: 'Direct Referral Reward',path: '/user/report/direct-reward',   icon: Award },
-      { title: 'Pair Matching Reward',  path: '/user/report/pair-reward',     icon: Briefcase },
-      { title: 'Pair Matching Monthly', path: '/user/report/pair-monthly',    icon: Activity },
       { title: 'Trading Profit Level',  path: '/user/report/trading-level',   icon: TrendingUp },
     ]
   },
@@ -211,31 +204,7 @@ const Sidebar = ({ onClose }) => {
         ))}
       </nav>
 
-      {/* Activation Prompt */}
-      <AnimatePresence>
-        {(!user.isActivated) && (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="px-4 pb-2 shrink-0"
-          >
-            <Link 
-              to="/user/topup/activation"
-              className="group block p-4 bg-amber-500/5 border border-amber-500/10 rounded-2xl hover:bg-amber-500/10 transition-all border-dashed"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center shrink-0">
-                  <Key size={14} className="group-hover:rotate-12 transition-transform" />
-                </div>
-                <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Security Protocol</p>
-              </div>
-              <p className="text-[9px] text-gray-500 font-bold uppercase leading-relaxed">
-                Node Activation <span className="text-white">Required</span> to unlock matching rewards.
-              </p>
-            </Link>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
 
       {/* Logout */}
       <div className="p-3 border-t border-white/[0.06] shrink-0">

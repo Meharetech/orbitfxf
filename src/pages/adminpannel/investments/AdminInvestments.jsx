@@ -137,12 +137,16 @@ const AdminInvestments = () => {
                                     </div>
                                 </div>
                                 <div className="bg-white/[0.01] p-4 rounded-xl border border-white/5">
+                                    <p className="text-[8px] text-gray-600 font-black uppercase tracking-widest mb-1.5">Personal ROI Payout</p>
+                                    <h4 className="text-xl font-black text-emerald-500 italic">${(previewData.totalPersonalProfit || 0).toFixed(1)}</h4>
+                                </div>
+                                <div className="bg-white/[0.01] p-4 rounded-xl border border-white/5">
                                     <p className="text-[8px] text-gray-600 font-black uppercase tracking-widest mb-1.5">Level Pool (25%)</p>
                                     <h4 className="text-xl font-black text-blue-500 italic">${previewData.totalLevelSharing.toFixed(1)}</h4>
                                 </div>
-                                <div className="bg-amber-500/5 p-4 rounded-xl border border-amber-500/10 col-span-2">
+                                <div className="bg-amber-500/5 p-4 rounded-xl border border-amber-500/10">
                                     <p className="text-[8px] text-amber-700 font-black uppercase tracking-widest mb-1.5">Net Network Payout</p>
-                                    <h4 className="text-2xl font-black text-amber-500 italic">${previewData.totalSystemOutflow.toFixed(1)}</h4>
+                                    <h4 className="text-xl font-black text-amber-500 italic">${previewData.totalSystemOutflow.toFixed(1)}</h4>
                                 </div>
 
                                 <div className="col-span-2 md:col-span-4 flex items-center justify-between p-3 bg-white/[0.02] rounded-xl mt-2">
@@ -198,8 +202,11 @@ const AdminInvestments = () => {
                                 { level: 'Level 3', share: '12%', color: 'indigo' },
                                 { level: 'Level 4', share: '10%', color: 'purple' },
                                 { level: 'Level 5', share: '8%', color: 'emerald' },
-                                { level: 'L6 - L10', share: '15%', color: 'gray' },
-                                { level: 'L11 - L20', share: '10%', color: 'gray' },
+                                { level: 'Level 6', share: '7%', color: 'pink' },
+                                { level: 'Level 7', share: '5%', color: 'cyan' },
+                                { level: 'Level 8', share: '5%', color: 'teal' },
+                                { level: 'Level 9', share: '5%', color: 'orange' },
+                                { level: 'Level 10', share: '3%', color: 'rose' },
                             ].map((row, idx) => (
                                 <div key={idx} className="flex justify-between items-center p-2 rounded-lg bg-white/[0.02] border border-white/[0.02] hover:border-white/5 transition-colors">
                                     <div className="flex items-center gap-2">

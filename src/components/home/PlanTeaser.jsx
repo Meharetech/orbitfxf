@@ -29,7 +29,7 @@ const PlanTeaser = () => {
                 <span className="text-gradient">Compensation Plan</span>
               </h2>
               <p className="text-gray-400 text-lg mb-8 max-w-md">
-                Our ecosystem is designed for maximum distribution. Start with a small activation and build a legacy of passive income.
+                Our ecosystem is designed for maximum distribution. Start investing today and build a legacy of passive income.
               </p>
             </motion.div>
 
@@ -73,11 +73,11 @@ const PlanTeaser = () => {
           >
             <div className="glass-card bg-electric-blue p-8 md:p-12 transform rotate-2 hover:rotate-0 transition-transform duration-700 shadow-2xl shadow-electric-blue/20">
               <div className="text-black space-y-4">
-                <div className="text-sm font-black uppercase tracking-[0.2em] opacity-60 text-center">Activation Package</div>
-                <div className="text-6xl md:text-8xl font-black text-center tracking-tighter">$150</div>
+                <div className="text-sm font-black uppercase tracking-[0.2em] opacity-60 text-center">Portfolio Entry</div>
+                <div className="text-6xl md:text-8xl font-black text-center tracking-tighter">$50</div>
                 <div className="h-px bg-black/10 w-full my-6"></div>
                 <ul className="space-y-3">
-                  {['Global Network Access', 'AI Trading Bot License', '24/7 Profit Generation', '2 Year Contract'].map((feature, i) => (
+                  {['Global Network Access', 'AI Trading Bot License', '24/7 Profit Generation', 'Flexible Withdrawal'].map((feature, i) => (
                     <li key={i} className="flex items-center gap-3 font-bold">
                       <CheckCircle2 className="w-5 h-5 mb-0.5" />
                       {feature}

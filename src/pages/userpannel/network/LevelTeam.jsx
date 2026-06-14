@@ -13,13 +13,16 @@ const LevelTeam = () => {
 
     const getCommission = (level) => {
         const lvl = parseInt(level);
-        if (lvl === 1) return '10%';
-        if (lvl === 2) return '5%';
-        if (lvl === 3) return '5%';
-        if (lvl === 4) return '3%';
-        if (lvl === 5) return '2%';
-        if (lvl >= 6 && lvl <= 10) return '1%';
-        if (lvl >= 11 && lvl <= 20) return '0.5%';
+        if (lvl === 1) return '30%';
+        if (lvl === 2) return '15%';
+        if (lvl === 3) return '12%';
+        if (lvl === 4) return '10%';
+        if (lvl === 5) return '8%';
+        if (lvl === 6) return '7%';
+        if (lvl === 7) return '5%';
+        if (lvl === 8) return '5%';
+        if (lvl === 9) return '5%';
+        if (lvl === 10) return '3%';
         return '0%';
     };
 
@@ -59,7 +62,7 @@ const LevelTeam = () => {
             {/* Page Header */}
             <div>
                 <h1 className="text-3xl font-black text-white">Referral Level Team</h1>
-                <p className="text-gray-500 font-medium">Visualize your network structure and track commissions up to 20 levels deep.</p>
+                <p className="text-gray-500 font-medium">Visualize your network structure and track commissions up to 10 levels deep.</p>
             </div>
 
             {/* Income Plan Teaser */}
@@ -70,14 +73,14 @@ const LevelTeam = () => {
                             <TrendingUp className="w-6 h-6 text-electric-blue" />
                         </div>
                         <div>
-                            <h3 className="text-white font-black text-lg">35% Total Distribution</h3>
-                            <p className="text-gray-500 text-sm font-bold">Comprehensive 20-Level AI Bot Profit Sharing</p>
+                            <h3 className="text-white font-black text-lg">Trading Level ROI</h3>
+                            <p className="text-gray-500 text-sm font-bold">10-Level Daily Profit Sharing Distribution</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-xs font-black text-white uppercase tracking-tighter opacity-70">Power Level</span>
+                        <span className="text-xs font-black text-white uppercase tracking-tighter opacity-70">Payouts</span>
                         <div className="flex gap-1">
-                           {[10, 5, 5, 3, 2, 1, 0.5].map((p, i) => (
+                           {[30, 15, 12, 10, 8, 7, 5, 3].map((p, i) => (
                                <div key={i} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg text-[10px] font-black text-electric-blue">
                                    {p}%
                                </div>
@@ -230,9 +233,9 @@ const LevelTeam = () => {
             <div className="p-5 rounded-2xl bg-electric-blue/5 border border-white/5 flex items-start gap-4">
                 <Info className="w-5 h-5 text-electric-blue mt-0.5" />
                 <div className="space-y-1">
-                    <h5 className="text-white font-bold text-sm">Automated Commission System</h5>
+                    <h5 className="text-white font-bold text-sm">Automated Level Profit Sharing System</h5>
                     <p className="text-gray-500 text-xs leading-relaxed font-medium">
-                        The 35% commission is distributed instantly when any member of your 20-level network activates their AI Trading Bot. Earnings are credited directly to your total balance.
+                        The Level ROI sharing is distributed daily when trading profits are processed. Upline accounts are rewarded up to 10 levels deep based on the volume of active portfolios in their network.
                     </p>
                 </div>
             </div>
