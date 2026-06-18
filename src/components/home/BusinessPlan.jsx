@@ -103,7 +103,7 @@ const BusinessPlan = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="glass-card p-8 bg-[#0a0f1d] border-white/5 flex flex-col justify-center items-center text-center gap-5">
               <div className="space-y-1">
-                 <h4 className="text-2xl font-black text-white leading-none italic">25% DISTRIBUTION</h4>
+                 <h4 className="text-2xl font-black text-white leading-none italic">30% DISTRIBUTION</h4>
                  <p className="text-[9px] text-electric-blue font-black uppercase tracking-widest italic">Quantum Profit Allocation</p>
               </div>
               <div className="w-40 h-40 opacity-20 grayscale brightness-125 hover:opacity-40 transition-opacity">

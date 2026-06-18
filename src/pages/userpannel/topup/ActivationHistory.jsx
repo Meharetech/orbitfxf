@@ -93,7 +93,7 @@ const ActivationHistory = () => {
                         <span className="text-[10px] text-amber-500 font-black uppercase tracking-widest">Integrity</span>
                      </div>
                      <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest leading-none">Global Coverage</p>
-                     <p className="text-xl font-black text-white italic tracking-tighter font-orbitron">20 LEVELS</p>
+                     <p className="text-xl font-black text-white italic tracking-tighter font-orbitron">10 LEVELS</p>
                 </div>
                 <div className="glass-card p-6 border-white/5 bg-white/[0.01] space-y-2 group">
                      <div className="flex items-center justify-between">

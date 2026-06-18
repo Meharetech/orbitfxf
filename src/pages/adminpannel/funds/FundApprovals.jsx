@@ -50,11 +50,12 @@ const FundApprovals = () => {
         }
     };
 
+    const safeRequests = Array.isArray(requests) ? requests : [];
     const stats = {
-        totalRecharge: requests.filter(r => r.status === 'Approved').reduce((s, r) => s + Number(r.amount), 0),
-        pending: requests.filter(r => r.status === 'Pending').length,
-        rejected: requests.filter(r => r.status === 'Rejected').length,
-        volume: requests.reduce((s, r) => s + Number(r.amount), 0)
+        totalRecharge: safeRequests.filter(r => r.status === 'Approved').reduce((s, r) => s + Number(r.amount || 0), 0),
+        pending: safeRequests.filter(r => r.status === 'Pending').length,
+        rejected: safeRequests.filter(r => r.status === 'Rejected').length,
+        volume: safeRequests.reduce((s, r) => s + Number(r.amount || 0), 0)
     };
 
     const statusConfig = {
@@ -63,7 +64,7 @@ const FundApprovals = () => {
         Rejected: { color: 'text-red-500',    bg: 'bg-red-500/5',    border: 'border-red-500/10',    icon: <XCircle size={10} /> },
     };
 
-    const filtered = requests.filter(r => r.status === tab);
+    const filtered = safeRequests.filter(r => r.status === tab);
 
     if (loading) {
         return (
@@ -175,7 +176,7 @@ const FundApprovals = () => {
                                     </td>
                                 </tr>
                             ) : filtered.map((req) => {
-                                const status = statusConfig[req.status];
+                                const status = statusConfig[req.status] || statusConfig.Pending;
                                 const isExpanded = expandedRow === req._id;
                                 return (
                                     <React.Fragment key={req._id}>
@@ -183,25 +184,25 @@ const FundApprovals = () => {
                                             <td className="px-5 py-3">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-7 h-7 bg-white/5 rounded flex items-center justify-center font-black text-[10px] text-gray-700 group-hover:bg-amber-500/10 group-hover:text-amber-500 transition-colors">
-                                                        {req.user?.username?.charAt(0).toUpperCase()}
+                                                        {req.user?.username?.charAt(0)?.toUpperCase() || '?'}
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <span className="text-white font-black uppercase italic leading-none truncate max-w-[100px]">@{req.user?.username}</span>
-                                                        <span className="text-[8px] text-gray-700 font-bold uppercase tracking-tight mt-0.5">{req.user?.fullName}</span>
+                                                        <span className="text-white font-black uppercase italic leading-none truncate max-w-[100px]">@{req.user?.username || 'Deleted User'}</span>
+                                                        <span className="text-[8px] text-gray-700 font-bold uppercase tracking-tight mt-0.5">{req.user?.fullName || 'N/A'}</span>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-5 py-3">
-                                                <span className="text-white font-black italic text-xs leading-none">${Number(req.amount).toFixed(0)}</span>
+                                                <span className="text-white font-black italic text-xs leading-none">${Number(req.amount || 0).toFixed(0)}</span>
                                             </td>
                                             <td className="px-5 py-3">
                                                 <div className="flex flex-col">
-                                                    <span className="text-[9px] text-white/80 font-black uppercase italic leading-none mb-1">{req.paymentMethod?.name}</span>
-                                                    <span className="text-[7px] text-amber-500 font-black uppercase tracking-tighter">{req.paymentMethod?.network}</span>
+                                                    <span className="text-[9px] text-white/80 font-black uppercase italic leading-none mb-1">{req.paymentMethod?.name || 'Manual Deposit'}</span>
+                                                    <span className="text-[7px] text-amber-500 font-black uppercase tracking-tighter">{req.paymentMethod?.network || 'Wallet'}</span>
                                                 </div>
                                             </td>
                                             <td className="px-5 py-3">
-                                                <span className="text-[9px] text-white/60 font-mono italic truncate max-w-[80px] block">{req.transactionId}</span>
+                                                <span className="text-[9px] text-white/60 font-mono italic truncate max-w-[80px] block">{req.transactionId || '—'}</span>
                                             </td>
                                             <td className="px-5 py-3">
                                                 <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter mb-1 ${status.bg} ${status.color} border ${status.border}`}>
@@ -239,10 +240,12 @@ const FundApprovals = () => {
                                                                     <span className="text-white/60 italic">{req.user?.phone}</span>
                                                                 </div>
                                                             </div>
-                                                            <div>
-                                                                <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1.5 italic">Master Hash Reference</p>
-                                                                <p className="text-[9px] text-white/60 font-mono bg-black/60 border border-white/5 rounded-lg p-3 break-all italic leading-relaxed">{req.transactionId}</p>
-                                                            </div>
+                                                            {req.transactionId && (
+                                                                <div>
+                                                                    <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1.5 italic">Master Hash Reference</p>
+                                                                    <p className="text-[9px] text-white/60 font-mono bg-black/60 border border-white/5 rounded-lg p-3 break-all italic leading-relaxed">{req.transactionId}</p>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                         <div className="lg:col-span-5">
                                                             {req.status === 'Pending' ? (

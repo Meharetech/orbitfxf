@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import api from '../../api/apiConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, User, Users, Share2, 
-  Wallet, FileText, CreditCard, LogOut, 
+import {
+  LayoutDashboard, User, Users, Share2,
+  Wallet, FileText, CreditCard, LogOut,
   ChevronDown, Activity, X,
-  FolderTree, UserPlus, UserCheck, 
-  TrendingUp, History, Send, Download, 
+  FolderTree, UserPlus, UserCheck,
+  TrendingUp, History, Send, Download,
   Award, Briefcase, BarChart3,
   Key, PlusCircle, BadgeCheck
 } from 'lucide-react';
@@ -23,8 +23,8 @@ const menuItems = [
     icon: User,
     id: 'profile',
     subItems: [
-      { title: 'View Profile',     path: '/user/profile/view',     icon: UserCheck },
-      { title: 'Change Password',  path: '/user/profile/password', icon: Key },
+      { title: 'View Profile', path: '/user/profile/view', icon: UserCheck },
+      { title: 'Change Password', path: '/user/profile/password', icon: Key },
     ]
   },
   {
@@ -33,14 +33,14 @@ const menuItems = [
     id: 'network',
     subItems: [
       { title: 'Direct Team', path: '/user/network/direct', icon: UserPlus },
-      { title: 'Level Team',  path: '/user/network/level',  icon: UserPlus },
-      { title: 'Left Team',   path: '/user/network/left',   icon: UserPlus },
-      { title: 'Right Team',  path: '/user/network/right',  icon: UserPlus },
-      { title: 'Tree View',   path: '/user/network/tree',   icon: FolderTree },
+      { title: 'Level Team', path: '/user/network/level', icon: UserPlus },
+      { title: 'Left Team', path: '/user/network/left', icon: UserPlus },
+      { title: 'Right Team', path: '/user/network/right', icon: UserPlus },
+      { title: 'Tree View', path: '/user/network/tree', icon: FolderTree },
     ]
   },
   {
-    title: 'Top Up',
+    title: 'Start Bot Trading ',
     icon: Share2,
     id: 'topup',
     subItems: [
@@ -52,9 +52,9 @@ const menuItems = [
     icon: Wallet,
     id: 'fund',
     subItems: [
-      { title: 'Fund Request',          path: '/user/fund/request',          icon: PlusCircle },
-      { title: 'Fund Request History',  path: '/user/fund/request-history',  icon: History },
-      { title: 'Fund Transfer',         path: '/user/fund/transfer',         icon: Send },
+      { title: 'Fund Request', path: '/user/fund/request', icon: PlusCircle },
+      { title: 'Fund Request History', path: '/user/fund/request-history', icon: History },
+      { title: 'Fund Transfer', path: '/user/fund/transfer', icon: Send },
       { title: 'Fund Transfer History', path: '/user/fund/transfer-history', icon: History },
       { title: 'Fund Received History', path: '/user/fund/received-history', icon: History },
     ]
@@ -64,19 +64,21 @@ const menuItems = [
     icon: FileText,
     id: 'report',
     subItems: [
-      { title: 'Trading Profit Income', path: '/user/report/trading-profit',  icon: BarChart3 },
-      { title: 'Trading Profit Level',  path: '/user/report/trading-level',   icon: TrendingUp },
+      { title: 'Trading Profit Income', path: '/user/report/trading-profit', icon: BarChart3 },
+      { title: 'Trading Profit Level', path: '/user/report/trading-level', icon: TrendingUp },
     ]
   },
+  /*
   {
     title: 'Withdrawal',
     icon: CreditCard,
     id: 'withdrawal',
     subItems: [
-      { title: 'Withdrawal',         path: '/user/withdrawal',         icon: Download },
+      { title: 'Withdrawal', path: '/user/withdrawal', icon: Download },
       { title: 'Withdrawal History', path: '/user/withdrawal/history', icon: History },
     ]
   }
+  */
 ];
 
 const Sidebar = ({ onClose }) => {
@@ -87,10 +89,10 @@ const Sidebar = ({ onClose }) => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-        try {
-            const res = await api.get('/auth/profile');
-            setProfile(res.data);
-        } catch (err) { }
+      try {
+        const res = await api.get('/auth/profile');
+        setProfile(res.data);
+      } catch (err) { }
     };
     fetchProfile();
   }, [user.token]);
@@ -99,7 +101,7 @@ const Sidebar = ({ onClose }) => {
 
   return (
     <div className="w-full h-full bg-[#08091a] border-r border-white/[0.06] flex flex-col overflow-hidden">
-      
+
       {/* Header */}
       <div className="px-6 py-6 border-b border-white/[0.06] flex items-center justify-between shrink-0">
         <Link to="/" className="flex items-center gap-3">
@@ -120,7 +122,7 @@ const Sidebar = ({ onClose }) => {
       <div className="px-4 py-4 shrink-0">
         <div className="flex items-center gap-3 p-3 bg-white/[0.03] rounded-2xl border border-white/[0.05]">
           <div className="w-9 h-9 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
-             <img src="/logo1.jpg" alt="OrbitFX Logo" className="w-full h-full object-cover opacity-80" />
+            <img src="/logo1.jpg" alt="OrbitFX Logo" className="w-full h-full object-cover opacity-80" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
@@ -130,10 +132,10 @@ const Sidebar = ({ onClose }) => {
               )}
             </div>
             <div className="flex items-center gap-2 mt-1">
-                <p className="text-electric-blue text-[10px] font-black uppercase tracking-widest">{profile?.referralCode || user.referralCode}</p>
-                <div className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${profile?.isActivated ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
-                    {profile?.isActivated ? 'VIP' : 'Inactive'}
-                </div>
+              <p className="text-electric-blue text-[10px] font-black uppercase tracking-widest">{profile?.referralCode || user.referralCode}</p>
+              <div className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${profile?.isActivated ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                {profile?.isActivated ? 'VIP' : 'Inactive'}
+              </div>
             </div>
           </div>
         </div>
@@ -147,9 +149,8 @@ const Sidebar = ({ onClose }) => {
               <>
                 <button
                   onClick={() => toggleMenu(item.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all text-sm ${
-                    openMenu === item.id ? 'bg-white/[0.06] text-white' : 'text-gray-500 hover:bg-white/[0.04] hover:text-gray-300'
-                  }`}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all text-sm ${openMenu === item.id ? 'bg-white/[0.06] text-white' : 'text-gray-500 hover:bg-white/[0.04] hover:text-gray-300'
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <item.icon className="w-[18px] h-[18px] shrink-0" />
@@ -172,11 +173,10 @@ const Sidebar = ({ onClose }) => {
                           key={sub.path}
                           to={sub.path}
                           onClick={onClose}
-                          className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-all ${
-                            location.pathname === sub.path
+                          className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-all ${location.pathname === sub.path
                               ? 'bg-orbit-gradient text-white font-bold'
                               : 'text-gray-600 hover:text-gray-300 hover:bg-white/[0.04]'
-                          }`}
+                            }`}
                         >
                           <sub.icon className="w-3.5 h-3.5 shrink-0" />
                           <span className="truncate">{sub.title}</span>
@@ -190,11 +190,10 @@ const Sidebar = ({ onClose }) => {
               <Link
                 to={item.path}
                 onClick={onClose}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
-                  location.pathname === item.path
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${location.pathname === item.path
                     ? 'bg-orbit-gradient text-white font-bold'
                     : 'text-gray-500 hover:bg-white/[0.04] hover:text-gray-300'
-                }`}
+                  }`}
               >
                 <item.icon className="w-[18px] h-[18px] shrink-0" />
                 <span className="font-semibold truncate">{item.title}</span>

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../../api/apiConfig';
 import { 
-  Wallet, QrCode, Clipboard, 
-  Upload, CheckCircle2, AlertCircle, 
-  Loader2, ArrowRight, History, 
-  ChevronRight, ArrowLeft, ShieldCheck,
-  CreditCard, Landmark, Banknote, Clock
+  Wallet, Upload, CheckCircle2, AlertCircle, 
+  Loader2, History, Landmark, Banknote, Clock,
+  XCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -28,36 +26,20 @@ const StatCard = ({ title, value, icon: Icon, color, delay }) => (
 );
 
 const FundRequest = () => {
-    // Navigation Control
-    const [currentStep, setCurrentStep] = useState(1); // 1: Amount, 2: Gateway, 3: Confirmation
-    
     // System Data
-    const [gateways, setGateways] = useState([]);
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [gatewaysVisible, setGatewaysVisible] = useState(false);
     
     // Selection Model
     const [amount, setAmount] = useState('');
-    const [selectedGateway, setSelectedGateway] = useState(null);
-    const [transactionId, setTransactionId] = useState('');
     const [screenshot, setScreenshot] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [success, setSuccess] = useState(false);
+    const [submittedTxId, setSubmittedTxId] = useState('');
 
     useEffect(() => {
-        fetchGateways();
         fetchHistory();
     }, []);
-
-    const fetchGateways = async () => {
-        try {
-            const res = await api.get('/payments/public');
-            setGateways(res.data);
-        } catch (err) {
-            console.error('Error fetching gateways');
-        }
-    };
 
     const fetchHistory = async () => {
         try {
@@ -82,17 +64,18 @@ const FundRequest = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!selectedGateway) return alert('Select a gateway first');
+        if (!amount || amount <= 0) return alert('Please enter a valid amount');
+        if (!screenshot) return alert('Please upload a screenshot proof');
+        
         setLoading(true);
         try {
-            await api.post('/funds/request', 
+            const res = await api.post('/funds/request', 
                 {
                     amount,
-                    paymentMethod: selectedGateway._id,
-                    transactionId,
                     screenshot
                 }
             );
+            setSubmittedTxId(res.data.fundRequest?.transactionId || '');
             setSuccess(true);
             resetForm();
             fetchHistory();
@@ -105,26 +88,8 @@ const FundRequest = () => {
 
     const resetForm = () => {
         setAmount('');
-        setTransactionId('');
         setScreenshot(null);
         setImagePreview(null);
-        setSelectedGateway(null);
-        setCurrentStep(1);
-    };
-
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text);
-        alert('Address Copied!');
-    };
-
-    const nextStep = () => {
-        if (currentStep === 1) {
-            if (!amount || amount <= 0) return alert('Enter a valid amount');
-            setCurrentStep(2);
-        } else if (currentStep === 2) {
-            if (!selectedGateway) return alert('Select a payment method');
-            setCurrentStep(3);
-        }
     };
 
     if (success) {
@@ -135,6 +100,14 @@ const FundRequest = () => {
                 </div>
                 <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Transmission Confirmed</h2>
                 <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mt-3">Administrative node IS verifying your deposit request.</p>
+                
+                {submittedTxId && (
+                    <div className="mt-6 p-4 bg-white/[0.02] border border-white/5 rounded-xl max-w-xs mx-auto">
+                        <span className="text-[8px] text-amber-500 font-black uppercase tracking-widest block mb-1">Tracking ID / Tx ID</span>
+                        <span className="text-xs font-mono font-bold text-white selection:bg-amber-500/30">{submittedTxId}</span>
+                    </div>
+                )}
+
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
                     <button 
                         onClick={() => setSuccess(false)}
@@ -161,38 +134,26 @@ const FundRequest = () => {
                     <h2 className="text-2xl font-black text-white tracking-tighter uppercase leading-none">Capital Entry</h2>
                     <p className="text-amber-500 text-[9px] font-black uppercase tracking-[0.3em]">Direct Liquidity Injection Protocol</p>
                 </div>
-                <div className="flex items-center gap-2 bg-white/[0.02] border border-white/5 p-1.5 rounded-xl">
-                    {[1, 2, 3].map((step) => (
-                        <div key={step} className="flex items-center gap-2 px-3">
-                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-[10px] transition-all ${currentStep === step ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : currentStep > step ? 'bg-green-500/20 text-green-500' : 'bg-white/5 text-white/20'}`}>
-                                {currentStep > step ? <CheckCircle2 size={12} /> : step}
-                            </div>
-                            <span className={`hidden md:block text-[8px] font-black uppercase tracking-widest ${currentStep === step ? 'text-white' : 'text-white/20'}`}>
-                                {step === 1 ? 'Amount' : step === 2 ? 'Gateway' : 'Confirm'}
-                            </span>
-                        </div>
-                    ))}
-                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Main Action Area */}
                 <div className="lg:col-span-3">
-                    <AnimatePresence mode="wait">
-                        {currentStep === 1 && (
-                            <motion.div 
-                                key="step1" 
-                                initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }}
-                                className="glass-card p-8 space-y-8 border-white/5 max-w-2xl mx-auto"
-                            >
-                                <div className="text-center space-y-3">
-                                    <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mx-auto mb-2">
-                                        <Banknote className="text-amber-500 w-6 h-6" />
-                                    </div>
-                                    <h3 className="text-xl font-black text-white tracking-tight uppercase">Enter Deposit Liquidity</h3>
-                                    <p className="text-white/40 text-[10px] font-black uppercase tracking-widest leading-relaxed px-4">Define the total capital you wish to transmit to the network core.</p>
-                                </div>
+                    <div className="glass-card p-8 space-y-8 border-white/5 max-w-2xl mx-auto">
+                        <div className="text-center space-y-3">
+                            <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <Banknote className="text-amber-500 w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl font-black text-white tracking-tight uppercase">Deposit Wallet Funds</h3>
+                            <p className="text-white/40 text-[10px] font-black uppercase tracking-widest leading-relaxed px-4">
+                                Enter the amount added to your wallet and upload the deposit proof screenshot.
+                            </p>
+                        </div>
 
+                        <form onSubmit={handleSubmit} className="space-y-8">
+                            {/* Amount Input */}
+                            <div className="space-y-2">
+                                <label className="text-[9px] text-white/40 font-black uppercase tracking-widest ml-1">Added Amount (USD)</label>
                                 <div className="relative group max-w-xs mx-auto">
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-3xl font-black text-amber-500 selection:bg-none">$</div>
                                     <input 
@@ -200,144 +161,50 @@ const FundRequest = () => {
                                         placeholder="0.00"
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
-                                        className="w-full bg-white/[0.01] border-b-2 border-white/5 py-6 pl-12 pr-4 text-4xl font-black text-white focus:outline-none focus:border-amber-500 transition-all placeholder:text-white/5"
+                                        className="w-full bg-white/[0.01] border-b-2 border-white/5 py-4 pl-12 pr-4 text-4xl font-black text-white focus:outline-none focus:border-amber-500 transition-all placeholder:text-white/5 text-center"
+                                        required
                                     />
                                     <div className="absolute bottom-2 right-2 text-[8px] font-black text-white/10 uppercase tracking-widest">USD NODE</div>
                                 </div>
+                            </div>
 
-                                <button 
-                                    onClick={nextStep}
-                                    className="w-full py-4 bg-amber-500 text-white font-black uppercase tracking-widest text-xs rounded-xl flex items-center justify-center gap-3 shadow-2xl shadow-amber-500/20 hover:bg-amber-600 active:scale-[0.98] transition-all"
-                                >
-                                    Proceed to Gateway <ChevronRight size={16} />
-                                </button>
-                            </motion.div>
-                        )}
-
-                        {currentStep === 2 && (
-                            <motion.div 
-                                key="step2" 
-                                initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }}
-                                className="glass-card p-8 space-y-8 border-white/5 max-w-2xl mx-auto"
-                            >
-                                <div className="flex items-center justify-between mb-4">
-                                    <button onClick={() => setCurrentStep(1)} className="flex items-center gap-2 text-[9px] text-white/40 font-black uppercase tracking-widest hover:text-white transition-colors">
-                                        <ArrowLeft size={12} /> Back
-                                    </button>
-                                    <h3 className="text-lg font-black text-white uppercase tracking-tight">Select Transmission Hub</h3>
-                                </div>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {gateways.map((g) => (
-                                        <div 
-                                            key={g._id}
-                                            onClick={() => setSelectedGateway(g)}
-                                            className={`p-4 border-2 rounded-xl cursor-pointer transition-all flex items-center gap-4 ${selectedGateway?._id === g._id ? 'bg-amber-500/10 border-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.1)]' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}
-                                        >
-                                            <div className="w-10 h-10 bg-black/40 rounded-lg flex items-center justify-center p-2">
-                                                <img src={g.qrCode} alt="Gateway" className="w-full h-full object-contain" />
-                                            </div>
-                                            <div>
-                                                <p className={`text-[11px] font-black uppercase tracking-tight ${selectedGateway?._id === g._id ? 'text-amber-500' : 'text-white'}`}>{g.name}</p>
-                                                <p className="text-[8px] text-white/40 font-black uppercase tracking-[0.2em]">{g.network}</p>
-                                            </div>
-                                            {selectedGateway?._id === g._id && <CheckCircle2 size={14} className="ml-auto text-amber-500" />}
+                            {/* Screenshot Upload */}
+                            <div className="space-y-2">
+                                <label className="text-[9px] text-white/40 font-black uppercase tracking-widest ml-1 block text-center">Upload Payment Screenshot</label>
+                                <div className="relative group bg-white/[0.01] border-2 border-dashed border-white/5 rounded-xl flex flex-col items-center justify-center p-4 min-h-[160px] hover:border-amber-500/30 transition-all overflow-hidden max-w-md mx-auto">
+                                    {imagePreview ? (
+                                        <div className="relative w-full h-full flex flex-col items-center justify-center">
+                                            <img src={imagePreview} className="max-w-full max-h-[140px] object-contain rounded-lg shadow-lg border border-white/10" alt="Preview" />
+                                            <button 
+                                                type="button" 
+                                                onClick={() => { setImagePreview(null); setScreenshot(null); }}
+                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors shadow-lg"
+                                            >
+                                                <XCircle size={16} />
+                                            </button>
                                         </div>
-                                    ))}
-                                </div>
-
-                                <button 
-                                    onClick={nextStep}
-                                    disabled={!selectedGateway}
-                                    className="w-full py-4 bg-amber-500 text-white font-black uppercase tracking-widest text-xs rounded-xl flex items-center justify-center gap-3 shadow-2xl shadow-amber-500/20 hover:bg-amber-600 active:scale-[0.98] disabled:opacity-30 transition-all"
-                                >
-                                    Confirm Transmission Point <ChevronRight size={16} />
-                                </button>
-                            </motion.div>
-                        )}
-
-                        {currentStep === 3 && (
-                            <motion.div 
-                                key="step3" 
-                                initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }}
-                                className="glass-card p-8 space-y-8 border-white/5 max-w-3xl mx-auto"
-                            >
-                                <div className="flex items-center justify-between">
-                                    <button onClick={() => setCurrentStep(2)} className="flex items-center gap-2 text-[9px] text-white/40 font-black uppercase tracking-widest hover:text-white transition-colors">
-                                        <ArrowLeft size={12} /> Gateway
-                                    </button>
-                                    <div className="flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-500 text-[9px] font-black uppercase">
-                                        <ShieldCheck size={12} /> Final Transmission
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col md:flex-row gap-8 items-start">
-                                    <div className="w-full md:w-1/2 space-y-4">
-                                        <div className="p-4 bg-black/40 border border-white/5 rounded-xl space-y-4">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-20 h-20 bg-white rounded-xl p-1.5 shrink-0 shadow-lg">
-                                                    <img src={selectedGateway?.qrCode} alt="QR" className="w-full h-full object-contain" />
-                                                </div>
-                                                <div className="space-y-2 flex-1 overflow-hidden">
-                                                    <span className="text-[8px] text-amber-500 font-black uppercase tracking-widest">{selectedGateway?.network} HUB</span>
-                                                    <div 
-                                                        onClick={() => copyToClipboard(selectedGateway?.walletAddress)}
-                                                        className="flex items-center gap-2 group cursor-pointer w-full bg-white/5 p-2 rounded-lg"
-                                                    >
-                                                        <p className="text-white text-[9px] font-mono break-all opacity-80 leading-tight">
-                                                            {selectedGateway?.walletAddress}
-                                                        </p>
-                                                        <Clipboard className="w-3 h-3 text-white/20 group-hover:text-amber-500 shrink-0" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flex justify-between items-center pt-2 border-t border-white/5">
-                                                <span className="text-[10px] text-white/40 uppercase font-black tracking-widest uppercase italic">Wait Transmission</span>
-                                                <span className="text-xl font-black text-white italic tracking-tighter">${amount}</span>
-                                            </div>
+                                    ) : (
+                                        <div className="text-center cursor-pointer">
+                                            <Upload className="w-8 h-8 text-white/10 mx-auto mb-2 group-hover:text-amber-500 transition-colors" />
+                                            <p className="text-[9px] font-black text-white/30 uppercase tracking-widest group-hover:text-white transition-colors">Select / Drag Proof Screenshot</p>
+                                            <p className="text-[7px] text-white/15 font-black uppercase tracking-wider mt-1">PNG, JPG, or WEBP up to 5MB</p>
                                         </div>
-                                    </div>
-
-                                    <form onSubmit={handleSubmit} className="w-full md:w-1/2 space-y-4">
-                                        <div className="space-y-1.5">
-                                            <label className="text-[9px] text-white/40 font-black uppercase tracking-widest ml-1">Blockchain Hash / TXID</label>
-                                            <input 
-                                                type="text" 
-                                                placeholder="Paste transaction hash..."
-                                                required
-                                                value={transactionId}
-                                                onChange={(e) => setTransactionId(e.target.value)}
-                                                className="w-full bg-white/[0.01] border border-white/5 rounded-xl py-3 px-4 text-xs text-white focus:outline-none focus:border-amber-500/50 transition-all font-mono"
-                                            />
-                                        </div>
-                                        
-                                        <div className="space-y-1.5">
-                                            <label className="text-[9px] text-white/40 font-black uppercase tracking-widest ml-1">Verifiable Proof</label>
-                                            <div className="relative group bg-white/[0.01] border-2 border-dashed border-white/5 rounded-xl flex flex-col items-center justify-center p-3 min-h-[100px] hover:border-amber-500/30 transition-all overflow-hidden">
-                                                {imagePreview ? (
-                                                    <img src={imagePreview} className="w-full h-full max-h-[120px] object-contain rounded-lg" alt="Preview" />
-                                                ) : (
-                                                    <div className="text-center">
-                                                        <Upload className="w-6 h-6 text-white/10 mx-auto mb-2" />
-                                                        <p className="text-[8px] font-black text-white/20 uppercase tracking-widest">Attach Screenshot</p>
-                                                    </div>
-                                                )}
-                                                <input type="file" onChange={handleScreenshotChange} accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
-                                            </div>
-                                        </div>
-
-                                        <button 
-                                            type="submit"
-                                            disabled={loading || !transactionId || !screenshot}
-                                            className="w-full py-4 bg-amber-500 text-white font-black uppercase tracking-widest text-[10px] rounded-xl flex items-center justify-center gap-3 shadow-2xl shadow-amber-500/20 active:scale-95 disabled:opacity-30 disabled:grayscale transition-all"
-                                        >
-                                            {loading ? <Loader2 className="animate-spin w-4 h-4" /> : <><CheckCircle2 size={16} /> Submit Transmission</>}
-                                        </button>
-                                    </form>
+                                    )}
+                                    {!imagePreview && (
+                                        <input type="file" onChange={handleScreenshotChange} accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
+                                    )}
                                 </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                            </div>
+
+                            <button 
+                                type="submit"
+                                disabled={loading || !amount || amount <= 0 || !screenshot}
+                                className="w-full py-4 bg-amber-500 text-white font-black uppercase tracking-widest text-xs rounded-xl flex items-center justify-center gap-3 shadow-2xl shadow-amber-500/20 hover:bg-amber-600 active:scale-[0.98] disabled:opacity-30 disabled:grayscale transition-all mt-4"
+                             >
+                                {loading ? <Loader2 className="animate-spin w-4 h-4" /> : <><CheckCircle2 size={16} /> Submit Deposit Proof</>}
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
                 {/* Compact Transfer Log Sidebar */}
@@ -362,7 +229,7 @@ const FundRequest = () => {
                                             </div>
                                             <div className="leading-none">
                                                 <p className="text-white text-lg font-black tracking-tighter italic leading-none">${req.amount.toLocaleString()}</p>
-                                                <p className="text-white/20 text-[8px] font-black uppercase tracking-widest mt-1">{req.paymentMethod?.name || 'Asset'}</p>
+                                                <p className="text-white/20 text-[8px] font-black uppercase tracking-widest mt-1">{req.paymentMethod?.name || 'Manual Wallet Deposit'}</p>
                                             </div>
                                         </div>
                                         <div className="text-right flex flex-col items-end gap-1.5">

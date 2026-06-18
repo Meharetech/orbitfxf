@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const PlanTeaser = () => {
   const highlights = [
     { icon: TrendingUp, text: '0.5% to 3% Daily ROI' },
-    { icon: Users, text: '20 Levels Referral Income' },
+    { icon: Users, text: '10 Levels Referral Income' },
     { icon: DollarSign, text: 'Massive Matching Bonus' },
     { icon: CheckCircle2, text: 'Monthly Rewards up to $50K' },
   ];

@@ -62,7 +62,7 @@ const TradingLevelReport = () => {
                 <div className="glass-card p-6 border-white/5 bg-white/[0.01] space-y-2">
                     <Layers className="text-purple-500 w-5 h-5" />
                     <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest leading-none">Generations</p>
-                    <p className="text-xl font-black text-white italic tracking-tighter">20 LEVELS</p>
+                    <p className="text-xl font-black text-white italic tracking-tighter">10 LEVELS</p>
                 </div>
                 <div className="glass-card p-6 border-white/5 bg-white/[0.01] space-y-2">
                     <Users className="text-pink-500 w-5 h-5" />
@@ -151,7 +151,7 @@ const TradingLevelReport = () => {
             <div className="p-4 bg-purple-500/5 border border-purple-500/10 rounded-2xl flex items-center gap-3 justify-center">
                 <Zap size={12} className="text-purple-500" />
                 <span className="text-purple-400/80 text-[9px] font-black uppercase tracking-[0.2em] text-center">
-                    Level ROI is credited daily based on the active trading profits of your generation network (20 levels)
+                    Level ROI is credited daily based on the active trading profits of your generation network (10 levels)
                 </span>
             </div>
         </div>
