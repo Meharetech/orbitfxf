@@ -72,7 +72,7 @@ const TradingLevelReport = () => {
                 <div className="glass-card p-6 border-white/5 bg-white/[0.01] space-y-2">
                     <TrendingUp className="text-green-500 w-5 h-5" />
                     <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest leading-none">Matrix Share</p>
-                    <p className="text-xl font-black text-white italic tracking-tighter">25.0%</p>
+                    <p className="text-xl font-black text-white italic tracking-tighter">30.0%</p>
                 </div>
                 <div className="glass-card p-6 border-white/5 bg-white/[0.01] space-y-2">
                     <ShieldCheck className="text-blue-500 w-5 h-5" />
@@ -127,7 +127,7 @@ const TradingLevelReport = () => {
                                             <div className="flex flex-col">
                                                 <span className="text-green-500 font-black text-lg italic tracking-tight">+${item.amount.toLocaleString()}</span>
                                                 <span className="text-[8px] text-gray-700 font-black uppercase tracking-[0.1em] mt-0.5">
-                                                    Matrix Share {item.levelRate ? (item.levelRate * 100).toFixed(0) : '...'}% of 25% Pool
+                                                    Matrix Share {item.levelRate ? (item.levelRate * 100).toFixed(0) : '...'}% of 30% Pool
                                                 </span>
                                             </div>
                                         </td>

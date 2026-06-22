@@ -141,7 +141,7 @@ const AdminInvestments = () => {
                                     <h4 className="text-xl font-black text-emerald-500 italic">${(previewData.totalPersonalProfit || 0).toFixed(1)}</h4>
                                 </div>
                                 <div className="bg-white/[0.01] p-4 rounded-xl border border-white/5">
-                                    <p className="text-[8px] text-gray-600 font-black uppercase tracking-widest mb-1.5">Level Pool (25%)</p>
+                                    <p className="text-[8px] text-gray-600 font-black uppercase tracking-widest mb-1.5">Level Pool (30%)</p>
                                     <h4 className="text-xl font-black text-blue-500 italic">${previewData.totalLevelSharing.toFixed(1)}</h4>
                                 </div>
                                 <div className="bg-amber-500/5 p-4 rounded-xl border border-amber-500/10">
@@ -218,7 +218,7 @@ const AdminInvestments = () => {
                             ))}
                         </div>
                         <div className="p-3 border-t border-white/5 bg-white/[0.01]">
-                             <p className="text-[8px] text-gray-700 font-black uppercase tracking-tighter italic text-center">Protocol applies to 25% Profit Pool</p>
+                             <p className="text-[8px] text-gray-700 font-black uppercase tracking-tighter italic text-center">Protocol applies to 30% Profit Pool</p>
                         </div>
                     </div>
                 </div>

@@ -103,7 +103,7 @@ const AdminInvestmentReports = () => {
                                 <th className="p-5 text-[9px] font-black uppercase tracking-widest text-gray-700">Rate (%)</th>
                                 <th className="p-5 text-[9px] font-black uppercase tracking-widest text-gray-700 text-center">Users Paid</th>
                                 <th className="p-5 text-[9px] font-black uppercase tracking-widest text-gray-700">Personal ROI Total</th>
-                                <th className="p-5 text-[9px] font-black uppercase tracking-widest text-gray-700">Network Pool (25%)</th>
+                                <th className="p-5 text-[9px] font-black uppercase tracking-widest text-gray-700">Network Pool (30%)</th>
                                 <th className="p-5 text-[9px] font-black uppercase tracking-widest text-gray-700">Total System Payout</th>
                             </tr>
                         </thead>
