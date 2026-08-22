@@ -8,6 +8,7 @@ import LevelTeam from './network/LevelTeam';
 import TreeView from './network/TreeView';
 import ProfileView from './profile/ProfileView';
 import ChangePassword from './profile/ChangePassword';
+import WalletSettings from './profile/WalletSettings';
 import FundRequest from './fund/FundRequest';
 import FundRequestHistory from './fund/FundRequestHistory';
 import InternalTransfer from './fund/InternalTransfer';
@@ -28,6 +29,7 @@ const UserPanelRoutes = () => {
         {/* Profile Routes */}
         <Route path="profile/view" element={<ProfileView />} />
         <Route path="profile/password" element={<ChangePassword />} />
+        <Route path="profile/wallet" element={<WalletSettings />} />
         
         {/* Network Routes */}
         <Route path="network/direct" element={<NetworkTeam type="direct" title="Direct Team" />} />

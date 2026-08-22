@@ -25,6 +25,7 @@ const menuItems = [
     subItems: [
       { title: 'View Profile', path: '/user/profile/view', icon: UserCheck },
       { title: 'Change Password', path: '/user/profile/password', icon: Key },
+      { title: 'Wallet Settings', path: '/user/profile/wallet', icon: Wallet },
     ]
   },
   {
@@ -68,7 +69,6 @@ const menuItems = [
       { title: 'Trading Profit Level', path: '/user/report/trading-level', icon: TrendingUp },
     ]
   },
-  /*
   {
     title: 'Withdrawal',
     icon: CreditCard,
@@ -78,7 +78,6 @@ const menuItems = [
       { title: 'Withdrawal History', path: '/user/withdrawal/history', icon: History },
     ]
   }
-  */
 ];
 
 const Sidebar = ({ onClose }) => {
