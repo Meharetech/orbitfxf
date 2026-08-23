@@ -96,7 +96,8 @@ const Investment = () => {
         try {
             const res = await api.post('/investments/withdraw', { investmentId: selectedInvestmentId });
             setMessage({ type: 'success', text: res.data.message });
-            fetchHistory();
+            fetchUserData(); // Instantly update available wallet balance
+            fetchHistory();  // Instantly update investments table
         } catch (err) {
             setMessage({ 
                 type: 'error', 
@@ -324,10 +325,10 @@ const Investment = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onConfirm={confirmWithdrawal}
-                title="Confirm Capital Withdrawal?"
-                message="Are you sure you want to withdraw your core trading capital? This action will discontinue all future ROI and network sharing linked to this node."
+                title="Confirm Instant Capital Withdrawal?"
+                message="Are you sure you want to withdraw your core trading capital? Your invested capital will be refunded instantly to your available wallet liquidity balance."
                 type="warning"
-                confirmText="Terminate & Withdraw Now"
+                confirmText="Instant Withdraw Now"
                 cancelText="Retain Investment"
             />
 
