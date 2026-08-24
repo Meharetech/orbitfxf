@@ -4,7 +4,8 @@ import {
   DollarSign, Wallet, ShieldCheck, 
   AlertCircle, CheckCircle2, 
   Loader2, Zap, Info, ChevronRight,
-  X, HelpCircle, Mail, KeyRound, RefreshCw
+  X, HelpCircle, Mail, KeyRound, RefreshCw,
+  Briefcase, TrendingUp, Layers
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -18,6 +19,8 @@ const WithdrawalRequest = () => {
     const [modalError, setModalError] = useState('');
     const [otpSentMessage, setOtpSentMessage] = useState('');
     const [balance, setBalance] = useState(0);
+    const [activeInvestment, setActiveInvestment] = useState(0);
+    const [totalWithdrawable, setTotalWithdrawable] = useState(0);
     const [wallet, setWallet] = useState({ address: '', network: 'USDT (TRC20)' });
     const [settings, setSettings] = useState({ withdrawalFee: 10, minWithdrawal: 1 });
     
@@ -68,7 +71,14 @@ const WithdrawalRequest = () => {
         setFetching(true);
         try {
             const res = await api.get('/auth/profile');
-            setBalance(res.data.balance || 0);
+            const bal = Number(res.data.balance) || 0;
+            const actInv = Number(res.data.activeInvestment) || 0;
+            const total = res.data.totalWithdrawableBalance !== undefined ? Number(res.data.totalWithdrawableBalance) : (bal + actInv);
+
+            setBalance(bal);
+            setActiveInvestment(actInv);
+            setTotalWithdrawable(total);
+
             setWallet({ 
                 address: res.data.walletAddress || '', 
                 network: res.data.walletNetwork || 'USDT (TRC20)' 
@@ -100,8 +110,8 @@ const WithdrawalRequest = () => {
              setError(`Minimum liquidation is $${settings.minWithdrawal}`);
              return;
         }
-        if (Number(amount) > balance) {
-            setError('Insufficient balance for this liquidation.');
+        if (Number(amount) > totalWithdrawable) {
+            setError(`Insufficient funds. Your total available (Liquidity + Active Invested Capital) is $${totalWithdrawable.toFixed(2)}.`);
             return;
         }
 
@@ -156,7 +166,7 @@ const WithdrawalRequest = () => {
             setAmount('');
             setOtp('');
             setConfirmed(false);
-            fetchProfile(); // Refresh balance
+            fetchProfile(); // Refresh balance and investments
         } catch (err) {
             setModalError(err.response?.data?.message || 'Liquidation protocol failed. Please check OTP and try again.');
         } finally {
@@ -166,6 +176,8 @@ const WithdrawalRequest = () => {
 
     const serviceFee = (Number(amount || 0) * (settings.withdrawalFee / 100)).toFixed(2);
     const netAmount = (Number(amount || 0) - serviceFee).toFixed(2);
+    const requiresAutoLiquidation = Number(amount) > balance && Number(amount) <= totalWithdrawable;
+    const liquidationFromCapital = requiresAutoLiquidation ? (Number(amount) - balance).toFixed(2) : 0;
 
     if (fetching) {
         return (
@@ -199,47 +211,87 @@ const WithdrawalRequest = () => {
     }
 
     return (
-        <div className="max-w-6xl mx-auto space-y-12 pb-20 animate-in fade-in duration-700">
-            {/* Header */}
+        <div className="max-w-6xl mx-auto space-y-8 pb-20 animate-in fade-in duration-700">
+            {/* Header with Triple Balances Display */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/5">
                 <div className="space-y-2">
-                    <h2 className="text-4xl font-black text-white tracking-tighter uppercase leading-none">Asset Liquidation</h2>
-                    <p className="text-amber-500 text-[10px] font-black uppercase tracking-[0.3em] ml-1">Secure Internal Capital Withdrawal Protocol</p>
+                    <h2 className="text-3xl md:text-4xl font-black text-white tracking-tighter uppercase leading-none">Asset Liquidation</h2>
+                    <p className="text-amber-500 text-[10px] font-black uppercase tracking-[0.3em] ml-1">Secure Capital Withdrawal & Instant Investment Release</p>
                 </div>
-                <div className="flex items-center gap-4">
-                    <div className="glass-card px-8 py-3 bg-amber-500/5 border-amber-500/20">
-                        <p className="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em] mb-1">Available Liquidity</p>
-                        <p className="text-2xl font-black text-white">${balance.toFixed(2)}</p>
+                
+                {/* 3 Balance Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full md:w-auto">
+                    <div className="glass-card px-5 py-3 bg-white/[0.02] border-white/5">
+                        <div className="flex items-center gap-2 mb-1">
+                            <Wallet size={12} className="text-blue-400" />
+                            <p className="text-[9px] text-gray-500 font-black uppercase tracking-[0.15em]">Liquidity Balance</p>
+                        </div>
+                        <p className="text-lg font-black text-white">${balance.toFixed(2)}</p>
+                    </div>
+
+                    <div className="glass-card px-5 py-3 bg-white/[0.02] border-white/5">
+                        <div className="flex items-center gap-2 mb-1">
+                            <Briefcase size={12} className="text-emerald-400" />
+                            <p className="text-[9px] text-gray-500 font-black uppercase tracking-[0.15em]">Invested Capital</p>
+                        </div>
+                        <p className="text-lg font-black text-emerald-400">${activeInvestment.toFixed(2)}</p>
+                    </div>
+
+                    <div className="glass-card px-5 py-3 bg-amber-500/10 border-amber-500/30 shadow-lg shadow-amber-500/5">
+                        <div className="flex items-center gap-2 mb-1">
+                            <Zap size={12} className="text-amber-400" />
+                            <p className="text-[9px] text-amber-300 font-black uppercase tracking-[0.15em]">Total Withdrawable</p>
+                        </div>
+                        <p className="text-xl font-black text-amber-400">${totalWithdrawable.toFixed(2)}</p>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
                 {/* Withdrawal Form */}
                 <div className="lg:col-span-3 space-y-8">
-                    <div className="glass-card p-10 border-white/5 relative overflow-hidden">
+                    <div className="glass-card p-8 md:p-10 border-white/5 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 blur-[100px] rounded-full -mr-32 -mt-32"></div>
                         
                         <form onSubmit={handlePreAuth} className="space-y-8 relative z-10">
                             {/* Redemption Amount */}
                             <div className="space-y-4">
-                                <label className="text-[10px] text-gray-600 font-black uppercase tracking-widest ml-1 flex items-center gap-2">
-                                    <DollarSign size={12} className="text-amber-500" /> Redemption Amount (USD)
-                                </label>
+                                <div className="flex items-center justify-between">
+                                    <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest ml-1 flex items-center gap-2">
+                                        <DollarSign size={12} className="text-amber-500" /> Redemption Amount (USD)
+                                    </label>
+                                    <button 
+                                        type="button"
+                                        onClick={() => setAmount(totalWithdrawable > 0 ? totalWithdrawable.toString() : '')}
+                                        className="px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all active:scale-95"
+                                    >
+                                        Max ($ {totalWithdrawable.toFixed(2)})
+                                    </button>
+                                </div>
+
                                 <div className="relative group">
                                     <span className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-black text-gray-700 group-focus-within:text-amber-500 transition-colors">$</span>
                                     <input 
                                         type="number" 
+                                        step="0.01"
                                         required
                                         placeholder="0.00"
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
-                                        className={`w-full bg-white/[0.02] border py-6 pl-12 pr-6 rounded-2xl text-white font-black text-3xl focus:outline-none transition-all placeholder:text-gray-800 ${(Number(amount) > balance || (amount > 0 && Number(amount) < settings.minWithdrawal)) ? 'border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.1)]' : 'border-white/5 focus:border-amber-500/50'}`}
+                                        className={`w-full bg-white/[0.02] border py-6 pl-12 pr-6 rounded-2xl text-white font-black text-3xl focus:outline-none transition-all placeholder:text-gray-800 ${(Number(amount) > totalWithdrawable || (amount > 0 && Number(amount) < settings.minWithdrawal)) ? 'border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.1)]' : 'border-white/5 focus:border-amber-500/50'}`}
                                     />
                                 </div>
-                                {Number(amount) > balance && (
+
+                                {requiresAutoLiquidation && (
+                                    <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center gap-2 text-blue-400 text-[10px] font-black uppercase tracking-widest">
+                                        <Zap size={14} className="shrink-0" />
+                                        <span>Auto-Release: ${balance.toFixed(2)} Liquidity + ${liquidationFromCapital} from Active Invested Capital</span>
+                                    </div>
+                                )}
+
+                                {Number(amount) > totalWithdrawable && (
                                     <p className="text-[10px] text-red-500 font-black uppercase tracking-widest ml-1 flex items-center gap-2">
-                                        <AlertCircle size={12}/> Insufficient Balance
+                                        <AlertCircle size={12}/> Insufficient Balance (Max: ${totalWithdrawable.toFixed(2)})
                                     </p>
                                 )}
                                 {amount > 0 && Number(amount) < settings.minWithdrawal && (
@@ -251,7 +303,7 @@ const WithdrawalRequest = () => {
 
                             {/* Network Selection */}
                             <div className="space-y-4">
-                                <label className="text-[10px] text-gray-600 font-black uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest ml-1 flex items-center gap-2">
                                     Network Selection Protocol
                                 </label>
                                 <div className="relative">
@@ -272,7 +324,7 @@ const WithdrawalRequest = () => {
 
                             {/* Destination Address */}
                             <div className="space-y-4">
-                                <label className="text-[10px] text-gray-600 font-black uppercase tracking-widest ml-1 flex items-center gap-2">
+                                <label className="text-[10px] text-gray-400 font-black uppercase tracking-widest ml-1 flex items-center gap-2">
                                     <Wallet size={12} className="text-amber-500" /> Destination Address
                                 </label>
                                 <div className="relative group">
@@ -292,13 +344,13 @@ const WithdrawalRequest = () => {
                             {amount > 0 && (
                                 <div className="p-8 bg-white/[0.02] border border-white/5 rounded-3xl space-y-6">
                                     <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                                        <span className="text-gray-600">Liquidation Fee ({settings.withdrawalFee}%)</span>
+                                        <span className="text-gray-500">Liquidation Fee ({settings.withdrawalFee}%)</span>
                                         <span className="text-red-500">-${serviceFee}</span>
                                     </div>
                                     <div className="h-px bg-white/5 w-full"></div>
                                     <div className="flex justify-between items-center">
                                         <div className="space-y-1">
-                                            <p className="text-[10px] text-gray-600 font-black uppercase tracking-widest">Net Redemption Value</p>
+                                            <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">Net Redemption Value</p>
                                             <p className="text-[8px] text-amber-500/60 font-black uppercase tracking-widest">Arrival in 24 hours</p>
                                         </div>
                                         <span className="text-3xl font-black text-white tracking-tighter">${netAmount}</span>
@@ -314,7 +366,7 @@ const WithdrawalRequest = () => {
 
                             <button 
                                 type="submit"
-                                disabled={loading || !amount || Number(amount) <= 0 || Number(amount) > balance || Number(amount) < settings.minWithdrawal || !wallet.address}
+                                disabled={loading || !amount || Number(amount) <= 0 || Number(amount) > totalWithdrawable || Number(amount) < settings.minWithdrawal || !wallet.address}
                                 className="w-full py-6 bg-amber-500 text-white font-black uppercase tracking-[0.4em] text-xs rounded-2xl flex items-center justify-center gap-4 shadow-2xl shadow-amber-500/20 hover:bg-amber-600 active:scale-95 disabled:opacity-30 disabled:grayscale transition-all"
                             >
                                 <Zap size={20} /> Authorize Liquidation
@@ -327,14 +379,14 @@ const WithdrawalRequest = () => {
                 <div className="lg:col-span-2 space-y-8">
                     <div className="glass-card p-8 border-white/5 space-y-8">
                         <div className="flex items-center gap-3 text-white font-black text-sm uppercase tracking-widest">
-                            <Info size={18} className="text-amber-500" /> Security & Policy
+                            <Info size={18} className="text-amber-500" /> Capital & Withdrawal Rules
                         </div>
                         <div className="space-y-6">
                             {[
+                                { title: 'Direct Capital Withdrawal', desc: 'You can withdraw directly from both your available liquidity balance and your active invested capital.' },
                                 { title: 'Email OTP Security', desc: 'A one-time cryptographic security code is dispatched to your registered email for every withdrawal authorization.' },
                                 { title: `${settings.withdrawalFee}% Service Fee`, desc: 'Mandatory network maintenance and liquidity balancing fee applied to all liquidations.' },
-                                { title: '24-Hour Protocol', desc: 'All requests undergo multi-signature verification. ETA for wallet arrival is 24 hours.' },
-                                { title: 'Irreversible Node', desc: 'Once authorized, the liquidation process cannot be aborted. Ensure wallet accuracy.' }
+                                { title: '24-Hour Protocol', desc: 'All requests undergo multi-signature verification. ETA for wallet arrival is 24 hours.' }
                             ].map((rule, i) => (
                                 <div key={i} className="flex gap-5 items-start">
                                     <div className="w-2 h-2 rounded-full bg-amber-500 mt-2 shrink-0"></div>
@@ -408,6 +460,13 @@ const WithdrawalRequest = () => {
                                             <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest">{wallet.network}</p>
                                         </div>
                                     </div>
+
+                                    {requiresAutoLiquidation && (
+                                        <div className="p-2.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-[9px] text-blue-400 font-bold uppercase tracking-wider">
+                                            Source: ${balance.toFixed(2)} from Liquidity + ${liquidationFromCapital} released from Invested Capital
+                                        </div>
+                                    )}
+
                                     <div className="h-px bg-white/5 w-full"></div>
                                     <div className="space-y-1">
                                         <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Destination Address</p>
