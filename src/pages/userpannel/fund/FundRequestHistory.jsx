@@ -43,7 +43,7 @@ const FundRequestHistory = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/5">
                 <div>
                     <h2 className="text-3xl font-black text-white tracking-tight uppercase flex items-center gap-3">
-                        <History className="text-amber-500 w-7 h-7" /> Fund History
+                        <History className="text-amber-500 w-7 h-7" /> Deposit Funds History
                     </h2>
                     <p className="text-gray-500 text-[11px] font-bold uppercase tracking-[0.25em] mt-1 ml-10">
                         Complete Deposit Transmission Log
@@ -150,40 +150,54 @@ const FundRequestHistory = () => {
                                                     )}
                                                 </td>
 
-                                                {/* Proof / Screenshot */}
+                                                {/* Proof / Screenshot - Only visible for Pending requests */}
                                                 <td className="px-5 py-4">
-                                                    <button
-                                                        onClick={() => setExpandedRow(isExpanded ? null : req._id)}
-                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition-all"
-                                                    >
-                                                        <Image size={12} />
-                                                        {isExpanded ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
-                                                    </button>
+                                                    {req.status === 'Pending' && req.screenshot ? (
+                                                        <button
+                                                            onClick={() => setExpandedRow(isExpanded ? null : req._id)}
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest text-amber-400 hover:text-white transition-all shadow-sm"
+                                                            title="View Submitted Proof"
+                                                        >
+                                                            <Image size={12} />
+                                                            <span>Proof</span>
+                                                            {isExpanded ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                                                        </button>
+                                                    ) : (
+                                                        <span className="text-gray-700 text-[9px] font-bold select-none">—</span>
+                                                    )}
                                                 </td>
                                             </tr>
 
-                                            {/* Expandable Screenshot Row */}
-                                            {isExpanded && (
-                                                <tr className="bg-black/20">
+                                            {/* Expandable Screenshot Row - Only rendered when Pending and expanded */}
+                                            {isExpanded && req.status === 'Pending' && (
+                                                <tr className="bg-black/25">
                                                     <td colSpan={8} className="px-6 py-6">
                                                         <div className="flex flex-col sm:flex-row gap-6 items-start">
-                                                            <div className="shrink-0">
-                                                                <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-3">Payment Proof Screenshot</p>
-                                                                <img
-                                                                    src={req.screenshot}
-                                                                    alt="Payment Screenshot"
-                                                                    className="w-48 max-h-48 object-contain rounded-xl border border-white/10 bg-white/5 p-2"
-                                                                />
-                                                            </div>
+                                                            {req.screenshot && (
+                                                                <div className="shrink-0">
+                                                                    <p className="text-[9px] font-black text-amber-400/80 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                                                                        <Image size={12} /> Payment Proof Screenshot (Pending Review)
+                                                                    </p>
+                                                                    <img
+                                                                        src={req.screenshot}
+                                                                        alt="Payment Screenshot"
+                                                                        className="w-52 max-h-52 object-contain rounded-xl border border-white/10 bg-white/5 p-2 shadow-xl"
+                                                                    />
+                                                                </div>
+                                                            )}
                                                             <div className="space-y-4 flex-1">
                                                                 <div>
-                                                                    <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-1.5">Full Transaction Hash</p>
-                                                                    <p className="text-[11px] text-white/60 font-mono bg-black/30 border border-white/5 rounded-xl px-4 py-3 break-all">{req.transactionId}</p>
+                                                                    <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1.5">Full Transaction Hash / TxID</p>
+                                                                    <p className="text-[11px] text-white font-mono bg-black/40 border border-white/5 rounded-xl px-4 py-3 break-all select-all font-bold">
+                                                                        {req.transactionId || '—'}
+                                                                    </p>
                                                                 </div>
                                                                 {req.paymentMethod?.walletAddress && (
                                                                     <div>
-                                                                        <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-1.5">Sent To Address</p>
-                                                                        <p className="text-[11px] text-amber-500/60 font-mono bg-black/30 border border-white/5 rounded-xl px-4 py-3 break-all">{req.paymentMethod.walletAddress}</p>
+                                                                        <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1.5">Sent To Admin Wallet Address</p>
+                                                                        <p className="text-[11px] text-amber-500/80 font-mono bg-black/40 border border-white/5 rounded-xl px-4 py-3 break-all select-all font-bold">
+                                                                            {req.paymentMethod.walletAddress}
+                                                                        </p>
                                                                     </div>
                                                                 )}
                                                             </div>

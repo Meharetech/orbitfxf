@@ -49,12 +49,12 @@ const menuItems = [
     ]
   },
   {
-    title: 'Fund',
+    title: 'Add Fund',
     icon: Wallet,
     id: 'fund',
     subItems: [
-      { title: 'Fund Request', path: '/user/fund/request', icon: PlusCircle },
-      { title: 'Fund Request History', path: '/user/fund/request-history', icon: History },
+      { title: 'Deposit Funds', path: '/user/fund/request', icon: PlusCircle },
+      { title: 'Deposit Funds History', path: '/user/fund/request-history', icon: History },
       { title: 'Fund Transfer', path: '/user/fund/transfer', icon: Send },
       { title: 'Fund Transfer History', path: '/user/fund/transfer-history', icon: History },
       { title: 'Fund Received History', path: '/user/fund/received-history', icon: History },
@@ -173,8 +173,8 @@ const Sidebar = ({ onClose }) => {
                           to={sub.path}
                           onClick={onClose}
                           className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-all ${location.pathname === sub.path
-                              ? 'bg-orbit-gradient text-white font-bold'
-                              : 'text-gray-600 hover:text-gray-300 hover:bg-white/[0.04]'
+                            ? 'bg-orbit-gradient text-white font-bold'
+                            : 'text-gray-600 hover:text-gray-300 hover:bg-white/[0.04]'
                             }`}
                         >
                           <sub.icon className="w-3.5 h-3.5 shrink-0" />
@@ -190,8 +190,8 @@ const Sidebar = ({ onClose }) => {
                 to={item.path}
                 onClick={onClose}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${location.pathname === item.path
-                    ? 'bg-orbit-gradient text-white font-bold'
-                    : 'text-gray-500 hover:bg-white/[0.04] hover:text-gray-300'
+                  ? 'bg-orbit-gradient text-white font-bold'
+                  : 'text-gray-500 hover:bg-white/[0.04] hover:text-gray-300'
                   }`}
               >
                 <item.icon className="w-[18px] h-[18px] shrink-0" />

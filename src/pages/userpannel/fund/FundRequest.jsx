@@ -191,7 +191,7 @@ const FundRequest = () => {
             {/* Compact Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-4 border-b border-white/5">
                 <div className="space-y-1">
-                    <h2 className="text-2xl font-black text-white tracking-tighter uppercase leading-none">Capital Entry</h2>
+                    <h2 className="text-2xl font-black text-white tracking-tighter uppercase leading-none">Deposit Funds</h2>
                     <p className="text-amber-500 text-[9px] font-black uppercase tracking-[0.3em]">Direct Liquidity Injection Protocol</p>
                 </div>
             </div>
